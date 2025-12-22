@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>نظف نيلك - لعبة ثلاثية الأبعاد</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Tajawal', 'sans-serif'],
+            },
+            colors: {
+              primary: '#6366f1', // Indigo 500
+              secondary: '#a855f7', // Purple 500
+              dark: '#0f172a', // Slate 900
+            },
+            keyframes: {
+              'fade-in-down': {
+                '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              'fade-in-up': {
+                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              'wave': {
+                '0%, 100%': { transform: 'scale(1) rotate(0deg)' },
+                '25%': { transform: 'scale(1.05) rotate(2deg)' },
+                '50%': { transform: 'scale(1.1) rotate(-1deg)' },
+                '75%': { transform: 'scale(1.05) rotate(1deg)' },
+              },
+              'water-wave': {
+                '0%': { transform: 'translateX(-100%)' },
+                '100%': { transform: 'translateX(100%)' },
+              },
+              'slide': {
+                '0%': { transform: 'translateX(-100%)' },
+                '100%': { transform: 'translateX(100%)' },
+              },
+              'walk': {
+                '0%': { transform: 'translateX(0px)' },
+                '25%': { transform: 'translateX(150px)' },
+                '50%': { transform: 'translateX(300px)' },
+                '75%': { transform: 'translateX(150px)' },
+                '100%': { transform: 'translateX(0px)' },
+              }
+            },
+            animation: {
+              'fade-in-down': 'fade-in-down 1s ease-out forwards',
+              'fade-in-up': 'fade-in-up 1s ease-out forwards',
+              'wave': 'wave 3s ease-in-out infinite',
+              'water-wave': 'water-wave 6s ease-in-out infinite',
+              'slide': 'slide 4s linear infinite',
+              'walk': 'walk 8s linear infinite',
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        margin: 0;
+        background-color: #0f172a;
+        color: white;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
