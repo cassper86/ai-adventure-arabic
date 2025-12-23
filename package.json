@@ -2,6 +2,7 @@
   "name": "ai-adventure-arabic",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://cassper86.github.io/ai-adventure-arabic",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "gh-pages": "^6.3.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
   }
