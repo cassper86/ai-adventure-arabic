@@ -61,7 +61,7 @@ export const GameMap: React.FC<GameMapProps> = ({ onSelectLevel, onBack, playerN
       x: 55, // الأقصر - وسط جنوب النيل
       y: 70,
       label: 'الأقصر',
-      status: 'locked',
+      status: 'active',
       imgUrl: '/image/allksor.jpg',
       imgTitle: 'معبد الأقصر'
     },

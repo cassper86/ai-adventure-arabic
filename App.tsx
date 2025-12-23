@@ -3,6 +3,8 @@ import { LandingPage } from './components/LandingPage';
 import { PlayerEntryPage } from './components/PlayerEntryPage';
 import { GameMap } from './components/GameMap';
 import { Game3DInterface } from './components/Game3DInterface';
+import { QRCodePage } from './components/QRCodePage';
+import { Level2 } from './components/Level2';
 import { GameState, PlayerStats } from './types';
 
 // تجاهل الأخطاء من Chrome Extensions
@@ -42,6 +44,13 @@ const App: React.FC = () => {
   // حالة تحميل المستوى
   const [isLoadingLevel, setIsLoadingLevel] = useState<boolean>(false);
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
+
+  // حالة تحميل المرحلة الثانية
+  const [isLoadingLevel2, setIsLoadingLevel2] = useState<boolean>(false);
+  const [loadingProgress2, setLoadingProgress2] = useState<number>(0);
+
+  // حالة صفحة QR code
+  const [showQRCode, setShowQRCode] = useState<boolean>(false);
 
   // حالة الفيديو والصورة النهائية
   const [showVideo, setShowVideo] = useState<boolean>(false);
@@ -227,6 +236,32 @@ const App: React.FC = () => {
   };
 
   /**
+   * بدء تحميل المرحلة الثانية مع progress bar (8 ثواني)
+   */
+  const startLevel2Loading = () => {
+    console.log('🚀 بدء تحميل المرحلة الثانية');
+    setIsLoadingLevel2(true);
+    setLoadingProgress2(0);
+
+    // Progress bar لمدة 8 ثواني
+    const progressInterval = setInterval(() => {
+      setLoadingProgress2(prev => {
+        if (prev >= 100) {
+          clearInterval(progressInterval);
+          console.log('✅ انتهى تحميل المرحلة الثانية');
+          setTimeout(() => {
+            setIsLoadingLevel2(false);
+            setGameState(GameState.LEVEL_2);
+          }, 500);
+          return 100;
+        }
+        // تقدم سلس للمرحلة الثانية - 5% كل 400ms = 8 ثواني كاملة
+        return prev + 5;
+      });
+    }, 400);
+  };
+
+  /**
    * تشغيل animation الركوب في المستوى الأول
    */
   const handleBoatRide = () => {
@@ -286,6 +321,9 @@ const App: React.FC = () => {
     if (level === 1) {
       // المستوى الأول - ابدأ تحميل المستوى مع progress bar
       startLevelLoading();
+    } else if (level === 2) {
+      // المستوى الثاني - ابدأ تحميل المستوى مع progress bar سريع (5 ثواني)
+      startLevel2Loading();
     } else {
       // المستويات الأخرى - اللعبة الثلاثية الأبعاد
     setGameState(GameState.PLAYING_3D);
@@ -307,11 +345,28 @@ const App: React.FC = () => {
     setGameState(GameState.MAP);
   };
 
+  /**
+   * الانتقال إلى صفحة QR Code
+   */
+  const handleShowQRCode = () => {
+    setGameState(GameState.QR_CODE);
+  };
+
+  /**
+   * العودة من صفحة QR code
+   */
+  const handleBackFromQR = () => {
+    setShowQRCode(false);
+  };
+
   return (
     <main className="antialiased text-slate-100 font-sans min-h-screen bg-slate-900 selection:bg-amber-500 selection:text-white">
       {/* الشاشة الرئيسية - الترحيب والقائمة الرئيسية */}
       {gameState === GameState.LANDING && (
-        <LandingPage onStartGame={handleStartClick} />
+        <LandingPage
+          onStartGame={handleStartClick}
+          onShowQRCode={handleShowQRCode}
+        />
       )}
 
       {/* شاشة إدخال اسم اللاعب */}
@@ -334,6 +389,20 @@ const App: React.FC = () => {
       {/* اللعبة ثلاثية الأبعاد - منطقة اللعب */}
       {gameState === GameState.PLAYING_3D && (
         <Game3DInterface onExit={handleBackToMap} />
+      )}
+
+      {/* المرحلة الثانية - المصنع */}
+      {gameState === GameState.LEVEL_2 && (
+        <Level2
+          playerName={playerName}
+          onComplete={() => setGameState(GameState.LEVEL_COMPLETE)}
+          onBack={handleBackToMap}
+        />
+      )}
+
+      {/* صفحة QR Code - مشاركة اللعبة */}
+      {gameState === GameState.QR_CODE && (
+        <QRCodePage onBack={handleBackToLanding} />
       )}
 
       {/* شاشة تحميل المستوى بتصميم فرعوني */}
@@ -422,6 +491,97 @@ const App: React.FC = () => {
           <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center">
             <div className="text-2xl text-amber-400/60 animate-pulse">
               𓁿 𓂀 𓁛 𓀠 𓂓 𓁿
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* شاشة تحميل المرحلة الثانية بتصميم صناعي */}
+      {isLoadingLevel2 && (
+        <div className="fixed inset-0 flex flex-col items-center justify-center z-50 overflow-hidden">
+          {/* خلفية الصورة كاملة */}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url('/image/factory.png')`
+            }}
+          />
+          {/* طبقة تعتيم صناعية */}
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-blue-900/60 to-gray-950/80"></div>
+
+          {/* رموز صناعية */}
+          <div className="absolute top-16 left-16 text-8xl text-blue-300/30 animate-pulse">⚙️</div>
+          <div className="absolute top-24 right-24 text-7xl text-gray-400/25 animate-pulse animation-delay-1000">🔧</div>
+          <div className="absolute bottom-32 left-24 text-6xl text-blue-400/30 animate-pulse animation-delay-500">🏭</div>
+          <div className="absolute bottom-24 right-32 text-5xl text-gray-300/35 animate-pulse animation-delay-1500">⚡</div>
+          <div className="absolute top-1/2 left-12 text-4xl text-blue-500/40 animate-pulse animation-delay-2000">🔩</div>
+          <div className="absolute top-1/2 right-12 text-4xl text-blue-500/40 animate-pulse animation-delay-2500">⚒️</div>
+
+          {/* محتوى التحميل */}
+          <div className="relative z-10 text-center px-8">
+            {/* عنوان صناعي */}
+            <div className="mb-16">
+              <h1 className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500 mb-6 animate-pulse drop-shadow-2xl">
+                🏭 المصنع الصناعي 🏭
+              </h1>
+              <h2 className="text-4xl font-bold text-blue-200 animate-pulse">
+                جاري تحميل المرحلة...
+              </h2>
+            </div>
+
+            {/* Progress Bar صناعي عملاق */}
+            <div className="w-[500px] mx-auto mb-12">
+              {/* خلفية الشريط */}
+              <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 rounded-full h-12 overflow-hidden shadow-inner border-6 border-blue-600 relative">
+                {/* إطار صناعي حول الشريط */}
+                <div className="absolute -top-3 -left-3 text-3xl text-blue-400 animate-pulse">⚙️</div>
+                <div className="absolute -top-3 -right-3 text-3xl text-blue-400 animate-pulse">⚙️</div>
+                <div className="absolute -bottom-3 -left-3 text-3xl text-blue-400 animate-pulse">⚙️</div>
+                <div className="absolute -bottom-3 -right-3 text-3xl text-blue-400 animate-pulse">⚙️</div>
+
+                {/* الشريط المتحرك */}
+                <div
+                  className="bg-gradient-to-r from-blue-600 via-cyan-400 to-blue-500 h-full rounded-full transition-all duration-500 ease-out shadow-lg relative overflow-hidden"
+                  style={{ width: `${Math.min(loadingProgress2, 100)}%` }}
+                >
+                  {/* تأثير الضوء المتقدم */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-pulse"></div>
+                  {/* رموز متحركة متعددة */}
+                  <div className="absolute inset-0 flex items-center justify-center text-2xl text-blue-900 animate-bounce space-x-2">
+                    <span>⚙️</span>
+                    <span>🔧</span>
+                    <span>⚙️</span>
+                  </div>
+                  {/* خطوط إضافية */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent animate-pulse"></div>
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue-300/60 to-transparent animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* النسبة المئوية عملاقة */}
+            <div className="text-6xl font-black text-blue-300 mb-8 drop-shadow-2xl animate-pulse">
+              {Math.round(Math.min(loadingProgress2, 100))}%
+            </div>
+
+            {/* رسائل تحميل صناعية */}
+            <div className="text-2xl text-blue-100 animate-pulse bg-black/40 rounded-xl px-8 py-4 border-2 border-blue-500/40 shadow-2xl">
+              {loadingProgress2 < 33 && "🏭 جاري تحضير المصنع..."}
+              {loadingProgress2 >= 33 && loadingProgress2 < 66 && "⚙️ جاري تحميل الآلات..."}
+              {loadingProgress2 >= 66 && loadingProgress2 < 100 && "🔧 جاري تهيئة البيئة الصناعية..."}
+              {loadingProgress2 >= 100 && "⚡ اكتمل التحضير! جاري البدء..."}
+            </div>
+
+            {/* رسالة تشجيعية صناعية */}
+            <div className="mt-8 text-lg text-blue-200 animate-bounce">
+              استعد لمغامرة في عالم المصانع الحديثة! 🏭⚡
+            </div>
+          </div>
+
+          {/* تأثيرات صناعية إضافية */}
+          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center">
+            <div className="text-2xl text-blue-400/60 animate-pulse">
+              ⚙️ 🔧 🏭 ⚡ ⚒️ ⚙️
             </div>
           </div>
         </div>
@@ -834,6 +994,11 @@ const App: React.FC = () => {
             )}
           </div>
         </div>
+      )}
+
+      {/* صفحة QR Code */}
+      {showQRCode && (
+        <QRCodePage onBack={handleBackFromQR} />
       )}
     </main>
   );

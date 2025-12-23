@@ -5,14 +5,20 @@ import { useSoundEffect } from '../hooks/useAudio';
 
 interface LandingPageProps {
   onStartGame: () => void;
+  onShowQRCode: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onStartGame }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ onStartGame, onShowQRCode }) => {
   const { playClick } = useSoundEffect();
 
   const handleStartGame = () => {
     playClick();
     onStartGame();
+  };
+
+  const handleShowQRCode = () => {
+    playClick();
+    onShowQRCode();
   };
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center justify-end overflow-hidden bg-slate-950"
@@ -34,22 +40,41 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartGame }) => {
       {/* Main Content */}
       <div className="relative z-20 flex flex-col items-center justify-end w-full h-full flex-grow pb-32">
         
-        {/* Start Button - Bottom */}
-        <div className="relative group animate-fade-in-up">
-            {/* Glow effect */}
-            <div className="absolute -inset-2 bg-gradient-to-r from-amber-600 to-amber-400 rounded-full blur-xl opacity-40 group-hover:opacity-80 transition duration-500 animate-pulse"></div>
-            
-            <Button
-                onClick={handleStartGame}
-                variant="stone"
-                size="lg"
-                className="relative min-w-[300px] text-4xl px-24 py-10 shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 border-t-4 border-amber-200"
-            >
-            <div className="flex items-center gap-6">
-                <Play className="w-12 h-12 text-amber-950 fill-amber-950" />
-                <span className="font-black text-amber-950">ابدأ اللعبة</span>
+        {/* Buttons Container */}
+        <div className="flex flex-col gap-6 animate-fade-in-up">
+            {/* Start Button */}
+            <div className="relative group">
+                {/* Glow effect */}
+                <div className="absolute -inset-2 bg-gradient-to-r from-amber-600 to-amber-400 rounded-full blur-xl opacity-40 group-hover:opacity-80 transition duration-500 animate-pulse"></div>
+
+                <Button
+                    onClick={handleStartGame}
+                    variant="stone"
+                    size="lg"
+                    className="relative min-w-[300px] text-4xl px-24 py-10 shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 border-t-4 border-amber-200"
+                >
+                <div className="flex items-center gap-6">
+                    <Play className="w-12 h-12 text-amber-950 fill-amber-950" />
+                    <span className="font-black text-amber-950">ابدأ اللعبة</span>
+                </div>
+                </Button>
             </div>
-            </Button>
+
+            {/* QR Code Button - Circular */}
+            <div className="relative group">
+                <button
+                    onClick={handleShowQRCode}
+                    className="relative w-24 h-24 bg-gradient-to-br from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-full hover:scale-110 active:scale-95 transition-all duration-300 border-4 border-green-200 flex items-center justify-center mx-auto"
+                    title="شارك اللعبة"
+                >
+                    {/* QR Code Image */}
+                    <img
+                        src="/image/game-qr-code.png"
+                        alt="QR Code"
+                        className="w-16 h-16 rounded group-hover:scale-110 transition-transform duration-300"
+                    />
+                </button>
+            </div>
         </div>
         
       </div>
